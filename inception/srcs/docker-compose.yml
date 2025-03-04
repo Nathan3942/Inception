@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  nginx:
+    container_name: n_nginx
+    build:
+      context: ./requirements/nginx
+    ports:
+      - "443:443"
+    volumes:
+      - ./requirements/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      # - ./requirements/nginx/conf/ssl:/etc/ssl/certs
+      - wordpress_data:/var/www/html
+    depends_on:
+      - wordpress
+    networks:
+      - inception
+    restart: always
+
+  wordpress:
+    container_name: n_wordpress
+    build:
+      context: ./requirements/wordpress
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_DB}
+    volumes:
+      - wordpress_data:/var/www/html
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+    restart: always
+
+  mariadb:
+    container_name: n_mariadb
+    build:
+      context: ./requirements/mariadb
+    image: mariadb:10.5
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    restart: always
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    tmpfs:
+      - /run/mysqld
+    networks:
+      - inception
+
+volumes:
+  mariadb_data:
+    name: mariadb_vlm
+    driver: local
+  wordpress_data:
+    name: wordpress_vlm
+    driver: local
+
+networks:
+  inception:
+    name: inception
+    driver: bridge
+

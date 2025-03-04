@@ -1,0 +1,16 @@
+# Ignorer les fichiers de configuration locaux ou sensibles
+#my.cnf
+#*.ini
+
+# Ignorer les fichiers de log
+#*.log
+#*.err
+
+# Ignorer les fichiers et répertoires de tests
+test/
+*.sql
+
+# Ignorer les fichiers .git
+.git/
+.gitignore
+

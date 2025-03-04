@@ -1,0 +1,24 @@
+# Ignore les fichiers et dossiers de configuration locaux
+#wp-config.php
+
+# Ignorer les fichiers de cache générés par WordPress
+#wp-content/cache/
+#wp-content/backups/
+
+# Ignorer les fichiers de logs
+#wp-content/debug.log
+
+# Ignorer les fichiers de tests et les répertoires inutiles
+node_modules/
+*.log
+*.sql
+*.tar.gz
+
+# Ignorer les fichiers .git
+.git/
+.gitignore
+
+# Ignorer les fichiers de l'environnement Docker (si vous avez un Dockerfile ou un autre fichier spécifique)
+Dockerfile
+.dockerignore
+
