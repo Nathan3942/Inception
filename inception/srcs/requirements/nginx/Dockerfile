@@ -17,7 +17,7 @@ COPY	./conf/nginx.conf /etc/nginx/nginx.conf
 
 RUN	update-ca-certificates
 
-EXPOSE	433
+EXPOSE	443
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
