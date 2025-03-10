@@ -23,10 +23,10 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     environment:
-      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_HOST: mariadb:3306
       WORDPRESS_DB_USER: ${MYSQL_USER}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
-      WORDPRESS_DB_NAME: ${MYSQL_DB}
+      WORDPRESS_DB_NAME: wordpress_db
     volumes:
       - wordpress_data:/var/www/html
     depends_on:
@@ -42,12 +42,13 @@ services:
     image: mariadb:10.5
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_DATABASE: wordpress_db
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     restart: always
     volumes:
       - mariadb_data:/var/lib/mysql
+      - ./requirements/mariadb/conf/init.sql:/docker-entrypoint-initdb.d/init.sql
     tmpfs:
       - /run/mysqld
     networks:
