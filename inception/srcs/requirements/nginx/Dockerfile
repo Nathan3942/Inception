@@ -7,13 +7,9 @@ RUN	apt-get update && \
 RUN	mkdir -p /etc/ssl/certs
 
 RUN	openssl genpkey -algorithm RSA -out /etc/ssl/certs/njeanbou.key -pkeyopt rsa_keygen_bits:2048 && \
-   	openssl req -new -x509 -key /etc/ssl/certs/njeanbou.key -out /etc/ssl/certs/njeanbou.crt -days 365 -subj "/C=CH/ST=Vaud/L=Lausanne/O=42/OU=42/CN=njeanbou.42.fr/emailAddress=njeanbou.42.fr"
-
-#RUN mkdir -p /usr/local/share/ca-certificates
+   	openssl req -new -x509 -key /etc/ssl/certs/njeanbou.key -out /etc/ssl/certs/njeanbou.crt -days 365 -subj "/C=CH/ST=Vaud/L=Lausanne/O=42/OU=42/CN=${DOMAIN_NAME}/emailAddress=${DOMAIN_NAME}"
 
 COPY	./conf/nginx.conf /etc/nginx/nginx.conf
-#COPY	./conf/ssl /etc/ssl/certs
-#COPY	./conf/ssl/nginx.crt /usr/local/share/ca-certificates/njeanbou.crt
 
 RUN	update-ca-certificates
 
