@@ -1,24 +1,19 @@
-FROM	debian:bullseye-slim
+FROM debian:bullseye
 
-RUN	apt-get update && \
-   	apt-get install -y --no-install-recommends \
-        php-fpm php-mysql wget curl tar ca-certificates tini && \
-   	rm -rf /var/lib/apt/lists/*
-
-WORKDIR /var/www/html
-
-RUN	curl -fsSL -O https://wordpress.org/latest.tar.gz && \
-   	tar -xvzf latest.tar.gz --strip-components=1 && \
-   	rm latest.tar.gz
-
-RUN	sed -i "s|listen = /run/php/php7.4-fpm.sock|listen = 0.0.0.0:9000|" /etc/php/7.4/fpm/pool.d/www.conf
+RUN apt-get update -y && \
+    apt-get install -y curl php php-fpm php-mysql mariadb-client && \
+    mkdir -p /run/php && \
+    mkdir -p /var/www/html && chown -R www-data:www-data /var/www/html && \
+    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+    chmod +x wp-cli.phar && \
+    mv wp-cli.phar /usr/local/bin/wp && \
+    wp cli update
 
 
-RUN	mkdir -p /run/php
+COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/
 
-RUN	echo "<?php phpinfo(); ?>" > /var/www/html/info.php
+COPY --chmod=0755 ./conf/entrypoint.sh /usr/local/bin
 
-EXPOSE	9000
+EXPOSE 9000
 
-CMD	["php-fpm7.4", "-F"]
-
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
